@@ -139,27 +139,6 @@
           <p>Terminales Activas: ${activas.length}</p>
           <p>Terminales No Activas: ${no_activas.length}</p>
         `;
-        html += `
-          <table>
-            <thead>
-              <tr>
-                <th>Sucursal</th>
-                <th>IP</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-        `;
-        [...activas, ...no_activas].forEach(t => {
-          html += `
-            <tr>
-              <td>${t.sucursal}</td>
-              <td>${t.ip}</td>
-              <td><span class="status ${activas.includes(t) ? "online" : "offline"}">${activas.includes(t) ? "En línea" : "Fuera de línea"}</span></td>
-            </tr>
-          `;
-        });
-        html += "</tbody></table>";
       }
       content.innerHTML = html;
     }
