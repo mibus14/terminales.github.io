@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ping Server</title>
+    <script>
+        // Función para hacer ping a un servidor
+        function pingServer() {
+            var ip = document.getElementById("ipInput").value;
+            fetch(`http://localhost:4567/ping/${ip}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert("El servidor está en línea.");
+                    } else {
+                        alert("El servidor no está en línea.");
+                    }
+                })
+                .catch(error => {
+                    alert("Error al hacer ping: " + error);
+                });
+        }
+    </script>
+</head>
+<body>
+    <h1>Ping Server</h1>
+    <label for="ipInput">Ingrese la dirección IP:</label>
+    <input type="text" id="ipInput" placeholder="Ejemplo: 192.168.1.1" />
+    <button onclick="pingServer()">Hacer Ping</button>
+</body>
+</html>
