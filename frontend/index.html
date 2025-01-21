@@ -3,30 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ping Server</title>
+    <title>Estado del Ping</title>
+    <style>
+        .status {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        .success {
+            color: green;
+        }
+        .failure {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Estado del Servidor</h1>
+    <p id="status" class="status">Cargando...</p>
+
     <script>
-        // Función para hacer ping a un servidor
-        function pingServer() {
-            var ip = document.getElementById("ipInput").value;
-            fetch(`http://localhost:4567/ping/${ip}`)
+        // Función para obtener el estado del ping
+        function getPingStatus() {
+            fetch('http://localhost:4567/ping-status')
                 .then(response => response.json())
                 .then(data => {
+                    const statusElement = document.getElementById('status');
                     if (data.status === 'success') {
-                        alert("El servidor está en línea.");
+                        statusElement.textContent = 'El servidor está en línea';
+                        statusElement.className = 'status success';
                     } else {
-                        alert("El servidor no está en línea.");
+                        statusElement.textContent = 'El servidor no está disponible';
+                        statusElement.className = 'status failure';
                     }
                 })
                 .catch(error => {
-                    alert("Error al hacer ping: " + error);
+                    console.error('Error al obtener el estado del ping:', error);
+                    const statusElement = document.getElementById('status');
+                    statusElement.textContent = 'Error al comprobar el estado del servidor';
+                    statusElement.className = 'status failure';
                 });
         }
+
+        // Llamar a la función para obtener el estado del ping cada 10 segundos
+        setInterval(getPingStatus, 10000);
+
+        // Obtener el estado inicial al cargar la página
+        window.onload = getPingStatus;
     </script>
-</head>
-<body>
-    <h1>Ping Server</h1>
-    <label for="ipInput">Ingrese la dirección IP:</label>
-    <input type="text" id="ipInput" placeholder="Ejemplo: 192.168.1.1" />
-    <button onclick="pingServer()">Hacer Ping</button>
 </body>
 </html>
