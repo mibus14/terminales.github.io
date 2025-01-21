@@ -77,11 +77,13 @@
     let activas = [];
     let no_activas = [];
 
+    // Función para obtener el estado de las terminales desde el servidor
     async function obtenerEstados() {
       try {
-        const response = await fetch('http://localhost:3000/estado');
+        const response = await fetch('http://localhost:3000/estado');  // Realiza la solicitud al servidor Express
         const data = await response.json();
 
+        // Actualiza las listas de terminales activas y no activas directamente desde los datos del servidor
         activas = data.activas;
         no_activas = data.no_activas;
 
@@ -91,6 +93,7 @@
       }
     }
 
+    // Función para mostrar los resultados
     function mostrar(tipo) {
       const content = document.getElementById("content");
       let html = "";
@@ -127,8 +130,11 @@
       content.innerHTML = html;
     }
 
+    // Actualiza el estado cada 30 segundos
     setInterval(obtenerEstados, 30000);
-    obtenerEstados();  // Inicia la actualización al cargar la página
+
+    // Inicia la actualización de estados al cargar la página
+    obtenerEstados();
   </script>
 </body>
 </html>

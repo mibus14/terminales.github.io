@@ -17,9 +17,10 @@
     "url": "https://github.com/mibus14/mibus14.github.io/issues"
   },
   "homepage": "https://github.com/mibus14/mibus14.github.io#readme",
-  "description": "",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.21.2",
     "ping": "^0.4.4"
-  }
+  },
+  "description": ""
 }

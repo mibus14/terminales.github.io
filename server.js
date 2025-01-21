@@ -1,19 +1,21 @@
 const express = require('express');
 const ping = require('ping');
+const cors = require('cors');  // Necesitas instalar CORS
+
 const app = express();
 const port = 3000;
+
+app.use(cors());  // Habilitar CORS
+app.use(express.static('public'));
 
 const terminales = [
   { sucursal: "SAME", ip: "10.197.128.98" },
   { sucursal: "SAME", ip: "10.197.128.99" },
-  { sucursal: "VDME", ip: "10.197.47.242" },
+  { sucursal: "VDME", ip: "10.197.3.242" },
   { sucursal: "VDME", ip: "10.197.47.243" },
-  // Agrega las demás terminales aquí...
 ];
 
-app.use(express.static('public'));  // Para servir archivos estáticos como el HTML
-
-app.get('/estado', async (req, res) => {
+async function obtenerEstadoTerminales() {
   let activas = [];
   let no_activas = [];
 
@@ -27,11 +29,15 @@ app.get('/estado', async (req, res) => {
       }
     } catch (error) {
       console.error(`Error al hacer ping a ${terminal.ip}:`, error);
-      no_activas.push(terminal);
     }
   }
 
-  res.json({ activas, no_activas });
+  return { activas, no_activas };
+}
+
+app.get('/estado', async (req, res) => {
+  const estado = await obtenerEstadoTerminales();
+  res.json(estado);
 });
 
 app.listen(port, () => {
