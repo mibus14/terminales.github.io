@@ -74,36 +74,20 @@
   <div class="table-container" id="content"></div>
 
   <script>
-    const terminales = [
-      { sucursal: "SAME", ip: "10.197.128.98" },
-      { sucursal: "SAME", ip: "10.197.128.99" },
-      { sucursal: "VDME", ip: "10.197.47.242" },
-      { sucursal: "VDME", ip: "10.197.47.243" },
-      // Agrega las demás terminales aquí...
-    ];
-
     let activas = [];
     let no_activas = [];
 
-    function ping(ip) {
-      return new Promise(resolve => {
-        const img = new Image();
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-        img.src = `http://${ip}/favicon.ico?${Date.now()}`;
-      });
-    }
+    async function obtenerEstados() {
+      try {
+        const response = await fetch('http://localhost:3000/estado');
+        const data = await response.json();
 
-    async function actualizarEstados() {
-      activas = [];
-      no_activas = [];
-      for (const terminal of terminales) {
-        const estado = await ping(terminal.ip);
-        if (estado) {
-          activas.push(terminal);
-        } else {
-          no_activas.push(terminal);
-        }
+        activas = data.activas;
+        no_activas = data.no_activas;
+
+        mostrar('activas');
+      } catch (error) {
+        console.error("Error al obtener el estado de las terminales:", error);
       }
     }
 
@@ -143,12 +127,8 @@
       content.innerHTML = html;
     }
 
-    setInterval(async () => {
-      await actualizarEstados();
-    }, 30000);
-
-    // Inicializar la actualización de estados
-    actualizarEstados();
+    setInterval(obtenerEstados, 30000);
+    obtenerEstados();  // Inicia la actualización al cargar la página
   </script>
 </body>
 </html>
