@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Terminales</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      margin: 20px 0;
+      color: #333;
+    }
+    .button-container {
+      margin: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f0f0f0;
+    }
+    button:hover {
+      background-color: #e0e0e0;
+    }
+    .table-container {
+      margin: 20px auto;
+      width: 90%;
+      max-width: 1200px;
+      overflow-x: auto;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+    th, td {
+      padding: 10px;
+      text-align: center;
+    }
+    th {
+      background-color: #f4f4f4;
+    }
+    .status {
+      padding: 5px 10px;
+      border-radius: 5px;
+      color: white;
+    }
+    .online {
+      background-color: green;
+    }
+    .offline {
+      background-color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gestión de Terminales</h1>
+  <div class="button-container">
+    <button onclick="mostrar('activas')">Terminales Activas</button>
+    <button onclick="mostrar('no_activas')">Terminales No Activas</button>
+    <button onclick="mostrar('general')">Estado General</button>
+  </div>
+  <div class="table-container" id="content"></div>
+
+  <script>
+    const terminales = [
+      { sucursal: "SAME", ip: "10.197.128.98" },
+      { sucursal: "SAME", ip: "10.197.128.99" },
+      { sucursal: "VDME", ip: "10.197.47.242" },
+      { sucursal: "VDME", ip: "10.197.47.243" },
+      // Agrega las demás terminales aquí...
+    ];
+
+    let activas = [];
+    let no_activas = [];
+
+    function ping(ip) {
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = `http://${ip}/favicon.ico?${Date.now()}`;
+      });
+    }
+
+    async function actualizarEstados() {
+      activas = [];
+      no_activas = [];
+      for (const terminal of terminales) {
+        const estado = await ping(terminal.ip);
+        if (estado) {
+          activas.push(terminal);
+        } else {
+          no_activas.push(terminal);
+        }
+      }
+    }
+
+    function mostrar(tipo) {
+      const content = document.getElementById("content");
+      let html = "";
+      if (tipo === "activas" || tipo === "no_activas") {
+        const lista = tipo === "activas" ? activas : no_activas;
+        html += `
+          <table>
+            <thead>
+              <tr>
+                <th>Sucursal</th>
+                <th>IP</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+        lista.forEach(t => {
+          html += `
+            <tr>
+              <td>${t.sucursal}</td>
+              <td>${t.ip}</td>
+              <td><span class="status ${tipo === "activas" ? "online" : "offline"}">${tipo === "activas" ? "En línea" : "Fuera de línea"}</span></td>
+            </tr>
+          `;
+        });
+        html += "</tbody></table>";
+      } else if (tipo === "general") {
+        html += `
+          <h2>Resumen General</h2>
+          <p>Terminales Activas: ${activas.length}</p>
+          <p>Terminales No Activas: ${no_activas.length}</p>
+        `;
+      }
+      content.innerHTML = html;
+    }
+
+    setInterval(async () => {
+      await actualizarEstados();
+    }, 30000);
+
+    // Inicializar la actualización de estados
+    actualizarEstados();
+  </script>
+</body>
+</html>
