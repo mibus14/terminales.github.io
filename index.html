@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Terminales</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+    h1 {
+      color: #333;
+    }
+    .button-container {
+      margin: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #f0f0f0;
+    }
+    button:hover {
+      background-color: #e0e0e0;
+    }
+    #output {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #fafafa;
+      min-height: 50px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Gestión de Terminales</h1>
+  <div class="button-container">
+    <button onclick="mostrarTerminales('activas')">Terminales Activas</button>
+    <button onclick="mostrarTerminales('no_activas')">Terminales No Activas</button>
+    <button onclick="mostrarTerminales('general')">Estado General</button>
+  </div>
+  <div id="output">Haz clic en un botón para ver la información.</div>
+
+  <script>
+    function mostrarTerminales(tipo) {
+      const output = document.getElementById('output');
+      if (tipo === 'activas') {
+        output.textContent = 'Mostrando terminales activas: [Lista de terminales activas aquí]';
+      } else if (tipo === 'no_activas') {
+        output.textContent = 'Mostrando terminales no activas: [Lista de terminales no activas aquí]';
+      } else if (tipo === 'general') {
+        output.textContent = 'Mostrando estado general de las terminales: [Información general aquí]';
+      }
+    }
+  </script>
+</body>
+</html>
